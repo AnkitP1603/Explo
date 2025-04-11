@@ -23,9 +23,9 @@ A lightweight, Dockerized microservice that combines:
 ```
 llm-microservice/  
   ├── app/|
-          ├── main.py # FastAPI backend   
-          └── static/|   
-                     └── index.html # Frontend interface   
+  |       ├── main.py # FastAPI backend   
+  |       └── static/|   
+  |                  └── index.html # Frontend interface   
   ├── Dockerfile # Container config   
   ├── requirements.txt # Python dependencies  
   ├── .gitignore   
