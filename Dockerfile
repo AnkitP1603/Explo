@@ -7,6 +7,7 @@ RUN apt-get update && apt-get install -y \
     curl \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
+
 COPY requirements.txt .
 
 RUN pip install --no-cache-dir --upgrade pip && \
@@ -21,6 +22,10 @@ pipeline('text-generation', model='tiiuae/falcon-rw-1b', trust_remote_code=True)
 print('Downloading CardiffNLP model...'); \
 pipeline('sentiment-analysis', model='cardiffnlp/twitter-roberta-base-sentiment')"
 
+RUN python3 -c "\
+import stanza; \
+print('Downloading Stanza English model...'); \
+stanza.download('en', model_dir='/models/stanza')"
 
 COPY app/ app/
 

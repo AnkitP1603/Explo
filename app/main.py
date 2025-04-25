@@ -1,7 +1,9 @@
 from fastapi import FastAPI
+from fastapi.responses import HTMLResponse
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 from transformers import AutoTokenizer, AutoModelForCausalLM, pipeline, AutoModelForSequenceClassification
-import torch
+import stanza
 
 app = FastAPI()
 
@@ -15,6 +17,8 @@ sentiment_tokenizer = AutoTokenizer.from_pretrained(sentiment_model_id)
 sentiment_model = AutoModelForSequenceClassification.from_pretrained(sentiment_model_id)
 sentiment_analyzer = pipeline("sentiment-analysis", model=sentiment_model, tokenizer=sentiment_tokenizer)
 
+nlp = stanza.Pipeline(lang='en', dir='/models/stanza', processors='tokenize,pos,lemma,depparse')
+
 class GenerateRequest(BaseModel):
     prompt: str
     max_tokens: int = 200
@@ -24,9 +28,14 @@ class GenerateRequest(BaseModel):
 class SentimentRequest(BaseModel):
     text: str
 
+class AnalyzeRequest(BaseModel):
+    text: str
+
 @app.get("/")
 def home():
-    return {"message": f"Models loaded: [Text Generation: '{generation_model_id}'], [Sentiment Analysis: '{sentiment_model_id}']"}
+    return {
+        "message": f"Models loaded: [Text Generation: '{generation_model_id}'], [Sentiment Analysis: '{sentiment_model_id}'], [Stanza: 'english']"
+    }
 
 @app.post("/generate")
 def generate(request: GenerateRequest):
@@ -56,9 +65,21 @@ def sentiment(request: SentimentRequest):
         "confidence": f"{score}%"
     }
 
+@app.post("/analyze")
+def analyze_text(request: AnalyzeRequest):
+    doc = nlp(request.text)
+    results = []
+    for sentence in doc.sentences:
+        for word in sentence.words:
+            results.append({
+                "text": word.text,
+                "lemma": word.lemma,
+                "pos": word.upos,
+                "head": word.head,
+                "deprel": word.deprel
+            })
+    return {"tokens": results}
 
-from fastapi.responses import HTMLResponse
-from fastapi.staticfiles import StaticFiles
 
 app.mount("/static", StaticFiles(directory="app/static"), name="static")
 
