@@ -44,7 +44,7 @@ Then open in browser: http://localhost:8000/ui
 
 🔗 API Endpoints:  
 ➤ /generate  
-➤ /sentiment
+➤ /sentiment    
 ➤ /analyze
 
 ✨ Technologies Used  
