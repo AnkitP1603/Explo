@@ -15,7 +15,7 @@ A lightweight, Dockerized microservice that combines:
 - Clean frontend at `/ui`
 - Containerized with Docker for easy deployment
 - Accepts prompts and returns generated text or sentiment + confidence score
-
+- Preloaded English NLP model with Stanza
 ---
 
 ## 📂 Project Structure
@@ -45,6 +45,7 @@ Then open in browser: http://localhost:8000/ui
 🔗 API Endpoints:  
 ➤ /generate  
 ➤ /sentiment
+➤ /analyze
 
 ✨ Technologies Used  
 - Python 3.11
@@ -61,6 +62,6 @@ pip install -r requirements.txt
 uvicorn app.main:app --reload
 ```
 
-Then visit: http://127.0.0.1:8000/ui
+Then visit: `http://127.0.0.1:8000/ui`
 
 
